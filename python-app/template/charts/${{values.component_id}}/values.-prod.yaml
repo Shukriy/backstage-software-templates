@@ -1,0 +1,5 @@
+replicaCount: 2
+resources: 
+  requests:
+    memory: "160Mi"
+    cpu: "150m"

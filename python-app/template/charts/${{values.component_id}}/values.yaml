@@ -1,0 +1,38 @@
+replicaCount: 1
+image:
+  repository: shukritech/${{values.component_id}}
+  pullPolicy: IfNotPresent
+  tag: ${{values.component_id}}-${{values.environment}}-latest
+imagePullSecrets: []
+nameOverride: ''
+fullnameOverride: ''
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 5000
+ingress:
+  enabled: true
+  hosts:
+    - host: ${{values.component_id}}-${{values.environment}}.test.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+resources: 
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+volumes: []
+volumeMounts: []
+nodeSelector: {}
+tolerations: []
+affinity: {}
+autoscaling:
+  enabled: false
+serviceAccount:
+  create: false
+httpRoute:
+  enabled: false
