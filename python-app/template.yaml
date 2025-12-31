@@ -59,6 +59,7 @@ spec:
         description: This is ${{ parameters.component_id }}
         repoUrl: github.com?owner=shuk-tech&repo=${{ parameters.component_id }}
         defaultBranch: 'main'
+        repoVisibility: public
 
     - id: register
       name: Register
