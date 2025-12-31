@@ -42,12 +42,21 @@ spec:
           component_id: ${{ parameters.component_id }}
           environment: ${{ parameters.environment }}
 
+    - id: BuildAndPush
+      name: Build and Push Docker Image
+      action: docker:buildAndPush
+      input:
+        dockerfile: ./Dockerfile
+        imageName: shukritech/${{ parameters.component_id }}
+        tag: ${{ parameters.component_id }}-${{ parameters.environment }}-latest
+        buildContext: ./src
+
     - id: publish
       name: Publish
       action: publish:github
       input:
         description: This is ${{ parameters.component_id }}
-        repoUrl: github.com?owner=Shukriy&repo=${{ parameters.component_id }}
+        repoUrl: github.com?owner=shuk-tech&repo=${{ parameters.component_id }}
         defaultBranch: 'main'
 
     - id: register
