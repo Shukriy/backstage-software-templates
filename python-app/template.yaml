@@ -46,11 +46,11 @@ spec:
       name: Publish
       action: publish:github
       input:
-        alloedHosts:
+        allowedHosts:
           - github.com
         description: This is ${{ parameters.component_id }}
-        repoUrl: github.com/owner=shukriy&repo=${{ parameters.component_id }}
-        protectedDefaultBranch: false
+        repoUrl: github.com?owner=Shukriy&repo=${{ parameters.component_id }}
+        defaultBranch: 'main'
 
     - id: register
       name: Register
