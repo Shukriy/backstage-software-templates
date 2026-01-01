@@ -75,4 +75,10 @@ jobs:
             --insecure \
             --plaintext \
             --grpc-web
+          ./argocd app create ${{values.component_id}} \
+            --repo https://github.com/shuk-tech/${{values.component_id}}.git \
+            --path charts/${{values.component_id}} \
+            --dest-server https://kubernetes.default.svc \
+            --dest-namespace default
           ./argocd app sync ${{values.component_id}} --grpc-web
+          ./argocd app wait ${{values.component_id}} --grpc-web --timeout 300
