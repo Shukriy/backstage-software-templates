@@ -57,7 +57,7 @@ jobs:
           echo ${{'${{needs.ci.outputs.sha_short}}'}}
           curl -sL https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o yq
           chmod +x yq
-          ./yq eval '.image.tag = "${{'${{ needs.ci.outputs.sha_short}}'}}"' -i 'charts/${{values.component_id}}/values-${{values.environment}}.yaml'
+          ./yq eval '.image.tag = "${{'${{ needs.ci.outputs.sha_short}}'}}"' -i 'charts/${{values.component_id}}/values.yaml'
 
       - 
         name: commit changes
@@ -82,7 +82,6 @@ jobs:
       - 
         name: Create and sync application
         run: |
-          ./argocd get app ${{values.component_id}} || \
           ./argocd app create ${{values.component_id}} --upsert \
             --repo https://github.com/shuk-tech/${{values.component_id}}.git \
             --path charts/${{values.component_id}} \
@@ -92,5 +91,6 @@ jobs:
             --sync-policy automated \
             --sync-option CreateNamespace=true \
             --grpc-web
+          sleep 5
           ./argocd app sync ${{values.component_id}} --grpc-web
           ./argocd app wait ${{values.component_id}} --grpc-web --timeout 300
