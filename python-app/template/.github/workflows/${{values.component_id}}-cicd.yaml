@@ -67,7 +67,7 @@ jobs:
           message: "ci: update image tag to ${{'${{ needs.ci.outputs.sha_short }}'}}"
 
       -
-        name: Login and sync ArgoCD application
+        name: Login and add repo to ArgoCD
         run: |
           ./argocd login argocd-server.argocd \
             --username admin \
@@ -75,10 +75,22 @@ jobs:
             --insecure \
             --plaintext \
             --grpc-web
-          ./argocd app create ${{values.component_id}} \
+          ./argocd repo list | grep '${{values.component_id}}' || \
+          ./argocd repo add \
+            https://github.com/shuk-tech/${{values.component_id}}.git
+        
+      - 
+        name: Create and sync application
+        run: |
+          ./argocd get app ${{values.component_id}} || \
+          ./argocd app create ${{values.component_id}} --upsert \
             --repo https://github.com/shuk-tech/${{values.component_id}}.git \
             --path charts/${{values.component_id}} \
             --dest-server https://kubernetes.default.svc \
-            --dest-namespace default
+            --dest-namespace ${{values.environment}} \
+            --values values-${{values.environment}}.yaml \
+            --sync-policy automated \
+            --sync-option CreateNamespace=true \
+            --grpc-web
           ./argocd app sync ${{values.component_id}} --grpc-web
           ./argocd app wait ${{values.component_id}} --grpc-web --timeout 300
